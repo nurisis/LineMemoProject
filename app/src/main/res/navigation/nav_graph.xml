@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/navigation"
+    app:startDestination="@id/memoListFragment">
+
+    <fragment
+        android:id="@+id/memoListFragment"
+        android:name="com.hinuri.linememoproject.memolist.MemoListFragment"
+        android:label="내 메모" >
+        <action
+            android:id="@+id/action_memoListFragment_to_writeMemoFragment"
+            app:destination="@id/writeMemoFragment" />
+        <action
+            android:id="@+id/action_memoListFragment_to_memoDetailFragment"
+            app:destination="@id/memoDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/writeMemoFragment"
+        android:name="com.hinuri.linememoproject.memo.WriteMemoFragment"
+        android:label="WriteMemoFragment" />
+    <fragment
+        android:id="@+id/memoDetailFragment"
+        android:name="com.hinuri.linememoproject.memo.MemoDetailFragment"
+        android:label="MemoDetailFragment" >
+        <action
+            android:id="@+id/action_memoDetailFragment_to_writeMemoFragment"
+            app:destination="@id/writeMemoFragment" />
+    </fragment>
+</navigation>

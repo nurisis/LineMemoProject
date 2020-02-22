@@ -1,0 +1,2 @@
+include ':app', ':data', ':entity'
+rootProject.name='LineMemoProject'
