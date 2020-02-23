@@ -1,13 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
             name="viewModel"
             type="com.hinuri.linememoproject.memo.MemoViewModel" />
+        <import type="com.hinuri.linememoproject.entity.MemoState"/>
     </data>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <RelativeLayout
+            android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:padding="8dp"
+                tools:text="TITLE"
+                android:text="@{viewModel.memoItem.title}" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="16dp"
+                android:scrollbars="horizontal"
+                android:orientation="horizontal"
+                android:visibility="@{!viewModel.memoImageList.empty}"
+                android:layout_below="@id/tv_title"/>
+
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_below="@id/rv_image"
+                android:padding="8dp"
+                tools:text="CONTENT"
+                android:text="@{viewModel.memoItem.content}"/>
+
+            <TextView
+                android:id="@+id/btn_edit"
+                android:layout_width="100dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/tv_content"
+                android:onClick="@{() -> viewModel.changeMemoState(MemoState.MEMO_EDIT)}"
+                android:text="EDIT"/>
+
+            <TextView
+                android:id="@+id/btn_delete"
+                android:layout_width="100dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/btn_edit"
+                android:onClick="@{() -> viewModel.deleteMemo()}"
+                android:text="DELETE"/>
+
+
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
 </layout>

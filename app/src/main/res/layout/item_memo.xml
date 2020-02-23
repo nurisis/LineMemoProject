@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="item"
@@ -13,6 +14,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:onClick="@{() -> viewModel.clickMemoItem(item)}"
     android:layout_marginBottom="16dp"
     android:padding="16dp">
 
@@ -20,16 +22,20 @@
         android:id="@+id/iv_thumbnail"
         android:layout_width="76dp"
         android:layout_height="76dp"
-        android:layout_marginRight="24dp"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:visibility="@{}"/>
+        android:layout_marginLeft="24dp"
+        android:clickable="false"
+        android:visibility="@{item.imageArr != null &amp;&amp; !item.imageArr.empty}"
+        app:imagePath="@{item.imageArr == null ? null : item.imageArr.get(0)}"/>
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_toRightOf="@id/iv_thumbnail"
+        android:clickable="false"
+        android:layout_toLeftOf="@id/iv_thumbnail"
         android:textStyle="bold"
         android:text="@{item.title}"
         tools:text="Title"/>
@@ -38,8 +44,9 @@
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/tv_title"
+        android:layout_alignRight="@id/tv_title"
         android:layout_below="@id/tv_title"
+        android:clickable="false"
         android:maxLines="2"
         android:ellipsize="end"
         android:text="@{item.content}"

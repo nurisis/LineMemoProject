@@ -1,4 +1,4 @@
-package com.hinuri.linememoproject
+package com.hinuri.linememoproject.memolist
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.hinuri.linememoproject.R
 
 class MainActivity : AppCompatActivity() {
 

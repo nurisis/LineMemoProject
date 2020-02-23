@@ -6,24 +6,5 @@
     <fragment
         android:id="@+id/memoListFragment"
         android:name="com.hinuri.linememoproject.memolist.MemoListFragment"
-        android:label="내 메모" >
-        <action
-            android:id="@+id/action_memoListFragment_to_writeMemoFragment"
-            app:destination="@id/writeMemoFragment" />
-        <action
-            android:id="@+id/action_memoListFragment_to_memoDetailFragment"
-            app:destination="@id/memoDetailFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/writeMemoFragment"
-        android:name="com.hinuri.linememoproject.memo.WriteMemoFragment"
-        android:label="WriteMemoFragment" />
-    <fragment
-        android:id="@+id/memoDetailFragment"
-        android:name="com.hinuri.linememoproject.memo.MemoDetailFragment"
-        android:label="MemoDetailFragment" >
-        <action
-            android:id="@+id/action_memoDetailFragment_to_writeMemoFragment"
-            app:destination="@id/writeMemoFragment" />
-    </fragment>
+        android:label="내 메모" />
 </navigation>

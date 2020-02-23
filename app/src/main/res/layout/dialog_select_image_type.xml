@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="360dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:gravity="center"
+        android:text="카메라"/>
+
+    <TextView
+        android:id="@+id/tv_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:gravity="center"
+        android:text="갤러리"/>
+
+    <TextView
+        android:id="@+id/tv_link"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="링크 입력"/>
+
+    <RelativeLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/et_link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="링크를 입력해주세요. http:// ..."/>
+
+        <TextView
+            android:id="@+id/tv_add_link"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:padding="16dp"
+            android:layout_centerHorizontal="true"
+            android:text="링크 추가"
+            android:layout_below="@id/et_link"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
+</layout>

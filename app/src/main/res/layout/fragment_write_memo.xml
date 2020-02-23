@@ -20,8 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:maxLines="1"
-        android:hint="제목이 궁금해요"
-        android:text="@={viewModel.memoTitle}" />
+        android:text="@{viewModel.memoItem.title}"
+        android:hint="제목이 궁금해요" />
 
     <TextView
         android:id="@+id/btn_add_image"
@@ -35,8 +35,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:layout_marginBottom="16dp"
+        android:scrollbars="horizontal"
+        android:orientation="horizontal"
         android:visibility="@{!viewModel.memoImageList.empty}"
         android:layout_below="@id/btn_add_image"/>
 
@@ -46,8 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_below="@id/rv_image"
-        android:hint="내용이 궁금해요"
-        android:text="@={viewModel.memoContents}"/>
+        android:text="@{viewModel.memoItem.content}"
+        android:hint="내용이 궁금해요"/>
 
     <TextView
         android:id="@+id/btn_save"
@@ -56,7 +58,6 @@
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/et_content"
-        android:onClick="@{() -> viewModel.saveMemo()}"
         android:text="저장 !!!"/>
 
 

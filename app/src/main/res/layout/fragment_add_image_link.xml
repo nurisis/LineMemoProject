@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.hinuri.linememoproject.addmedia.AddMediaViewModel" />
+    </data>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/et_link"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:hint="링크를 입력해주세요. http:// ..."/>
+
+    <TextView
+        android:id="@+id/tv_add_link"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:padding="16dp"
+        android:layout_centerHorizontal="true"
+        android:text="링크 추가"
+        android:layout_below="@id/et_link"/>
+
+</RelativeLayout>
+</layout>

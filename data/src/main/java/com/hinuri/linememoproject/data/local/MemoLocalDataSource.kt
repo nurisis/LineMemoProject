@@ -17,4 +17,12 @@ class MemoLocalDataSource (
     suspend fun insertMemo(memo:Memo) = withContext(ioDispatcher) {
         memoDao.insertMemo(memo)
     }
+
+    suspend fun updateMemo(memo:Memo) = withContext(ioDispatcher) {
+        memoDao.updateMemo(memo)
+    }
+
+    suspend fun deleteMemo(memo:Memo) = withContext(ioDispatcher) {
+        memoDao.deleteMemo(memo)
+    }
 }

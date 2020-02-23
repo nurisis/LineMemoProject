@@ -7,11 +7,16 @@ import com.hinuri.linememoproject.domain.MemoUseCase
 class MemoListViewModel(
     private val memoUseCase: MemoUseCase
 ) :ViewModel() {
-//    private val _memoLists : LiveData<List<Memo>>
-//    val memoLists : LiveData<List<Memo>> = _memoLists
 
     val memoLists: LiveData<List<Memo>> = liveData {
         emitSource(memoUseCase.getAllMemo())
+    }
+
+    private val _memoClicked = MutableLiveData<Memo>()
+    val memoClicked : LiveData<Memo> = _memoClicked
+
+    fun clickMemoItem(memo:Memo) {
+        _memoClicked.value = memo
     }
 
 }

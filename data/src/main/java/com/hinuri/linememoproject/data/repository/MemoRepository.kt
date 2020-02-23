@@ -30,4 +30,22 @@ class MemoRepository(
             return@withContext memoLocalDataSource.insertMemo(memo)
         }
     }
+
+    /**
+     * 메모 작성 후 update
+     * */
+    suspend fun updateMemo(memo:Memo) {
+        return withContext(ioDispatcher) {
+            return@withContext memoLocalDataSource.updateMemo(memo)
+        }
+    }
+
+    /**
+     * 메모 삭제
+     * */
+    suspend fun deleteMemo(memo:Memo) {
+        return withContext(ioDispatcher) {
+            return@withContext memoLocalDataSource.deleteMemo(memo)
+        }
+    }
 }
