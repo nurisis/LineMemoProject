@@ -1,25 +1,23 @@
 package com.hinuri.linememoproject.addmedia
 
-import android.webkit.URLUtil
+import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.gun0912.tedpermission.PermissionListener
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import java.net.HttpURLConnection
-import java.net.URL
 
 class AddMediaViewModel :ViewModel() {
 
     private val _isPermissionAllowed = MutableLiveData<Boolean>()
     val isPermissionAllowed : LiveData<Boolean> = _isPermissionAllowed
 
-    private val _isImageLinkAdded = MutableLiveData<Boolean>()
-    val isImageLinkAdded : LiveData<Boolean> = _isImageLinkAdded
+    private val _isImageLinkValid = MutableLiveData<Boolean>()
+    val isImageLinkValid : LiveData<Boolean> = _isImageLinkValid
 
     /**
      * 카메라 권한 리스너
@@ -28,7 +26,6 @@ class AddMediaViewModel :ViewModel() {
         // 권한 허용 시
         override fun onPermissionGranted() {
             _isPermissionAllowed.value = true
-//            takePicture()
         }
         // 권한 거부..
         override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
@@ -36,33 +33,28 @@ class AddMediaViewModel :ViewModel() {
         }
     }
 
-    fun addImageLink(linkUrl:String) : Boolean {
-        return isImageLinkValid(linkUrl).also {
-            _isImageLinkAdded.value = it
+    val glideListener = object : RequestListener<Drawable> {
+        override fun onLoadFailed(
+            e: GlideException?,
+            model: Any?,
+            target: Target<Drawable>?,
+            isFirstResource: Boolean
+        ): Boolean {
+            _isImageLinkValid.value = false
+            Log.e("LOG>>", "유효하지 않은 링크!")
+            return true
         }
-    }
 
-    /**
-     * 사용자가 입력한 이미지 링크의 유효 여부 체크
-     */
-    private fun isImageLinkValid(url:String) : Boolean{
-        if(!url.endsWith(".jpeg", true) && !url.endsWith(".jpg", true) &&
-            !url.endsWith(".png", true) && !url.endsWith(".gif", true) && !url.endsWith(".bmp", true))
+        override fun onResourceReady(
+            resource: Drawable?,
+            model: Any?,
+            target: Target<Drawable>?,
+            dataSource: DataSource?,
+            isFirstResource: Boolean
+        ): Boolean {
+            _isImageLinkValid.value = true
+            Log.d("LOG>>", "유효한 링크!")
             return false
-
-        var result = URLUtil.isValidUrl(url)
-
-//        runBlocking {
-//            viewModelScope.launch(Dispatchers.IO) {
-//                URLUtil.isValidUrl(url)
-//
-//                URL(url).openConnection().run {
-//                    val responseCode = (this as HttpURLConnection).responseCode
-//                    if(responseCode == 200) result = true
-//                }
-//            }
-//        }
-
-        return result
+        }
     }
 }

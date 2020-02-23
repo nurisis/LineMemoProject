@@ -48,6 +48,13 @@
             android:text="링크 추가"
             android:layout_below="@id/et_link"/>
 
+        <ImageView
+            android:id="@+id/iv_link"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:layout_below="@id/tv_add_link"
+            android:visibility="gone"/>
+
     </RelativeLayout>
 
 </LinearLayout>

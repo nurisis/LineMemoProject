@@ -1,6 +1,7 @@
 package com.hinuri.linememoproject.memo
 
 import android.Manifest
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +12,12 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.gun0912.tedpermission.TedPermission
 import com.hinuri.linememoproject.R
 import com.hinuri.linememoproject.addmedia.SelectImageTypeDialog
@@ -68,6 +75,17 @@ class WriteMemoFragment : Fragment() {
 
                 // 이미지 경로인 결과값 받음
                 setImageTypeDialogResult(object : SelectImageTypeDialog.OnImageTypeDialogResult{
+                    override fun addImageLink(url: String, isValid: Boolean) {
+                        Log.d("LOG>>", "받아온링크 : $url, isValid: $isValid")
+
+                        if(isValid)
+                            memoViewModel.addImage(url)
+                        else
+                            Toast.makeText(activity,"링크가 유효하지 않습니다\uD83D\uDE2D",Toast.LENGTH_LONG).show()
+
+                        dismiss()
+                    }
+
                     override fun finish(imagePath: String?) {
                         Log.d("LOG>>", "받아온 이미지 :$imagePath")
 
@@ -78,9 +96,36 @@ class WriteMemoFragment : Fragment() {
 
                         dismiss()
                     }
+
+
                 })
 
             }.show(activity.supportFragmentManager, "SelectImageTypeDialog")
+        }
+    }
+
+    private val glideListener = object : RequestListener<Drawable> {
+        override fun onLoadFailed(
+            e: GlideException?,
+            model: Any?,
+            target: Target<Drawable>?,
+            isFirstResource: Boolean
+        ): Boolean {
+            Toast.makeText(activity,"유효하지 않은 링크!",Toast.LENGTH_LONG).show()
+            Log.e("LOG>>", "유효하지 않은 링크!")
+            return true
+        }
+
+        override fun onResourceReady(
+            resource: Drawable?,
+            model: Any?,
+            target: Target<Drawable>?,
+            dataSource: DataSource?,
+            isFirstResource: Boolean
+        ): Boolean {
+            Toast.makeText(activity,"유효한 링크!",Toast.LENGTH_LONG).show()
+            Log.d("LOG>>","링크 성공! dataSource : $dataSource")
+            return true
         }
     }
 

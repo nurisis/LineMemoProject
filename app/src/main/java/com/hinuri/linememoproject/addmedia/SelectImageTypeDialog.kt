@@ -9,10 +9,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.gun0912.tedpermission.TedPermission
-import kotlinx.android.synthetic.main.dialog_select_image_type.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -20,12 +18,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.hinuri.linememoproject.BuildConfig
 import com.hinuri.linememoproject.R
 import com.hinuri.linememoproject.common.Constant
@@ -41,10 +34,11 @@ class SelectImageTypeDialog : DialogFragment() {
     private lateinit var viewDataBinding:DialogSelectImageTypeBinding
     private val mediaViewModel by sharedViewModel<AddMediaViewModel>()
 
-    var onImageTypeDialogResult: SelectImageTypeDialog.OnImageTypeDialogResult? = null
+    var onImageTypeDialogResult: OnImageTypeDialogResult? = null
 
     private var imageType : String? = null
     private var cameraImagePath : String? = null
+    private var imageLink : String? = null
 
     private val TAKE_PHOTO_CODE = 111
     private val GALLERY_PHOTO_CODE = 222
@@ -70,37 +64,12 @@ class SelectImageTypeDialog : DialogFragment() {
         }
 
         viewDataBinding.tvAddLink.setOnClickListener {
-            //temp
+            imageLink = viewDataBinding.etLink.text.toString()
             Glide.with(this)
-                .load(viewDataBinding.etLink.text.toString())
-                .addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        Log.e("LOG>>", "유효하지 않은 링크!")
-                        Toast.makeText(it.context, "유효하지 않은 링크입니다!", Toast.LENGTH_LONG).show()
-                        return true
-                    }
-
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        onImageTypeDialogResult?.finish(imagePath = viewDataBinding.etLink.text.toString())
-                        return true
-                    }
-                }).submit()
-
-//            if(mediaViewModel.addImageLink(viewDataBinding.etLink.text.toString()))
-//                onImageTypeDialogResult?.finish(imagePath = viewDataBinding.etLink.text.toString())
-//            else
-//                Toast.makeText(context, "유효하지 않은 링크입니다!", Toast.LENGTH_LONG).show()
+                .load(imageLink)
+                .listener(mediaViewModel.glideListener)
+                .into(viewDataBinding.ivLink)
+//                .submit()
         }
 
         return viewDataBinding.root
@@ -118,10 +87,12 @@ class SelectImageTypeDialog : DialogFragment() {
             }
         })
 
+        mediaViewModel.isImageLinkValid.observe(viewLifecycleOwner, Observer {
+            Log.d("LOG>>", "isImageLinkValid : $it, imageLink : $imageLink")
 
-        mediaViewModel.isImageLinkAdded.observe(viewLifecycleOwner, Observer {
-            if(it) {
-                activity?.onBackPressed()
+            imageLink?.run {
+                onImageTypeDialogResult?.addImageLink(this, it)
+                imageLink = null
             }
         })
     }
@@ -262,6 +233,7 @@ class SelectImageTypeDialog : DialogFragment() {
 
     interface OnImageTypeDialogResult {
         fun finish(imagePath:String?)
+        fun addImageLink(url:String, isValid:Boolean)
     }
 
     companion object {
