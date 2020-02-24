@@ -44,6 +44,16 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    // Core library
+    androidTestImplementation "androidx.test:core:$androidXTestVersion"
+    testImplementation group: 'androidx.arch.core', name: 'core-testing', version: "$androidCoreTestVersion"
+    // AndroidJUnitRunner and JUnit Rules
+    androidTestImplementation "androidx.test:runner:$androidXTestVersion"
+    androidTestImplementation "androidx.test:rules:$androidXTestVersion"
+    // Mockito - https://site.mockito.org/
+    testImplementation "org.mockito:mockito-core:$mockVersion"
+    testImplementation "org.mockito:mockito-inline:$mockVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
 
     implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifecycleVersion"

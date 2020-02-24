@@ -2,8 +2,8 @@
 <layout>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="360dp"
-    android:layout_height="wrap_content">
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tv_camera"
@@ -11,7 +11,13 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="17sp"
         android:text="카메라"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#eaeaea"/>
 
     <TextView
         android:id="@+id/tv_gallery"
@@ -19,14 +25,13 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="17sp"
         android:text="갤러리"/>
-
-    <TextView
-        android:id="@+id/tv_link"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="링크 입력"/>
+        android:layout_height="1dp"
+        android:background="#eaeaea"/>
 
     <RelativeLayout
         android:orientation="vertical" android:layout_width="match_parent"
@@ -42,10 +47,14 @@
         <TextView
             android:id="@+id/tv_add_link"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:padding="16dp"
+            android:gravity="center"
             android:layout_centerHorizontal="true"
             android:text="링크 추가"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:textSize="17sp"
             android:layout_below="@id/et_link"/>
 
         <ImageView

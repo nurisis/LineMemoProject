@@ -25,7 +25,8 @@ class MainActivity : AppCompatActivity() {
         navController = Navigation.findNavController(this,
             R.id.my_nav_host_fragment
         )
-//        appBarConfiguration = AppBarConfiguration(navController.graph)
-//        setupActionBarWithNavController(navController, appBarConfiguration)
+
+        appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 }

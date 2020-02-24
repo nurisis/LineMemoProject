@@ -22,7 +22,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MemoActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
 
     private val memoViewModel by viewModel<MemoViewModel>()
@@ -31,11 +30,10 @@ class MemoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo)
 
+
         navController = Navigation.findNavController(this,
             R.id.fragment_nav_memo
         )
-//        appBarConfiguration = AppBarConfiguration(navController.graph)
-//        setupActionBarWithNavController(navController, appBarConfiguration)
 
         intent?.apply {
             when(getStringExtra(Constant.EXTRA_MEMO_TYPE_KEY)) {

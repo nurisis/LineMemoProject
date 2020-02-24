@@ -6,7 +6,8 @@
             type="com.hinuri.linememoproject.memo.MemoViewModel" />
         <import type="com.hinuri.linememoproject.entity.MemoState"/>
     </data>
-<androidx.appcompat.widget.Toolbar android:id="@+id/toolbar"
+<androidx.appcompat.widget.Toolbar
+    android:id="@+id/toolbar"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -14,6 +15,13 @@
     android:minHeight="?attr/actionBarSize"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="@{viewModel.memoStatus == MemoState.MEMO_VIEW || viewModel.memoStatus == MemoState.MEMO_EDIT_DONE}"
+        android:src="@drawable/ic_arrow_back_black_24dp"/>
 
     <TextView
         android:id="@+id/tv_save"
@@ -38,7 +46,7 @@
         android:text="삭제"
         android:textStyle="bold"
         android:textColor="#000000"
-        android:visibility="@{viewModel.memoStatus == MemoState.MEMO_VIEW}"
+        android:visibility="@{viewModel.memoStatus == MemoState.MEMO_VIEW || viewModel.memoStatus == MemoState.MEMO_EDIT_DONE}"
         android:onClick="@{() -> viewModel.deleteMemo()}"
         android:layout_gravity="end"/>
 
@@ -53,7 +61,7 @@
         android:textStyle="bold"
         android:textColor="#000000"
         android:layout_gravity="end"
-        android:visibility="@{viewModel.memoStatus == MemoState.MEMO_VIEW}"
+        android:visibility="@{viewModel.memoStatus == MemoState.MEMO_VIEW || viewModel.memoStatus == MemoState.MEMO_EDIT_DONE}"
         android:onClick="@{() -> viewModel.changeMemoState(MemoState.MEMO_EDIT)}"/>
 
 </androidx.appcompat.widget.Toolbar>

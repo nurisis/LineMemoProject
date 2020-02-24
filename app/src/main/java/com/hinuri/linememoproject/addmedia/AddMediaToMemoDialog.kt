@@ -70,6 +70,10 @@ class AddMediaToMemoDialog : DialogFragment() {
         }
 
         viewDataBinding.tvAddLink.setOnClickListener {
+            if(viewDataBinding.etLink.text.toString().isEmpty()) {
+                Toast.makeText(it.context, "링크를 입력해주세요!" , Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             imageLink = viewDataBinding.etLink.text.toString()
 
             // Glide의 requestListener를 통해 이미지 링크 url 유효 여부 체크

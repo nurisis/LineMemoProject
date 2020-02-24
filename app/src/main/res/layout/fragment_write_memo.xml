@@ -5,19 +5,23 @@
             name="viewModel"
             type="com.hinuri.linememoproject.memo.MemoViewModel" />
     </data>
-    <androidx.core.widget.NestedScrollView
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#ffffff">
+        android:background="#ffffff">
 
-            <include
-                android:id="@+id/toolbar"
-                layout="@layout/layout_memo_toolbar"/>
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/layout_memo_toolbar"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#eaeaea"/>
 
     <EditText
         android:id="@+id/et_title"
@@ -29,6 +33,7 @@
         android:textSize="18dp"
         android:textStyle="bold"
         android:maxLines="1"
+        android:inputType="text"
         android:text="@{viewModel.memoItem.title}"
         android:hint="제목이 궁금해요" />
 
@@ -44,12 +49,17 @@
 
     <TextView
         android:id="@+id/btn_add_image"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:background="@color/colorAccent"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="4dp"
         android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/et_title"
-        android:text="+ 이미지 추가"/>
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:text="이미지 추가"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_image"
@@ -58,18 +68,8 @@
         android:layout_marginBottom="16dp"
         android:scrollbars="horizontal"
         android:orientation="horizontal"
-        android:visibility="@{!viewModel.memoImageList.empty}"
+        android:background="#eaeaea"
         android:layout_below="@id/btn_add_image"/>
-
-<!--    <TextView-->
-<!--        android:id="@+id/btn_save"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="48dp"-->
-<!--        android:gravity="center"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_below="@id/et_content"-->
-<!--        android:text="저장 !!!"/>-->
-
 
 </LinearLayout>
 </androidx.core.widget.NestedScrollView>
