@@ -1,14 +1,11 @@
 package com.hinuri.linememoproject.memolist
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.hinuri.linememoproject.R
 import com.hinuri.linememoproject.databinding.ItemMemoBinding
 import com.hinuri.linememoproject.data.entity.Memo
 
@@ -35,12 +32,6 @@ class MemoListAdapter(private val viewModel: MemoListViewModel) : ListAdapter<Me
                 viewModel = this@ViewHolder.viewModel
                 lifecycleOwner = binding.root.context as LifecycleOwner
             }.executePendingBindings()
-
-//            binding.root.setOnClickListener {
-//                Navigation.findNavController(binding.root).navigate(R.id.action_memoListFragment_to_memoDetailFragment,
-//                    Bundle().apply { putSerializable("memo", item) }
-//                )
-//            }
         }
 
         companion object {

@@ -1,6 +1,5 @@
 package com.hinuri.linememoproject.memo
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,12 +12,14 @@ import kotlinx.coroutines.launch
 class MemoViewModel(
     private val memoUseCase: MemoUseCase
 ) :ViewModel(){
-    private val _memoItem = MutableLiveData<Memo>().apply { Memo() }
+    // 현재 메모장 상세 페이지에 보여지는 메모 데이터.
+    private val _memoItem = MutableLiveData<Memo>()
     val memoItem : LiveData<Memo> = _memoItem
 
     private val _memoImageList = MutableLiveData<MutableList<String>>()
     val memoImageList : LiveData<MutableList<String>> = _memoImageList
 
+    // 현재 메모의 상태 (보기, 작성, 편집 등)
     private val _memoState = MutableLiveData<MemoState>()
     val memoStatus : LiveData<MemoState> = _memoState
 
@@ -29,20 +30,18 @@ class MemoViewModel(
         changeMemoState(MemoState.MEMO_VIEW)
     }
 
+    // 이미지 추가
     fun addImage(imagePath: String) {
-        Log.d("LOG>>","addImage >> ")
-
         _memoImageList.value = memoImageList.value!!.apply { add(imagePath) }
-
-        Log.d("LOG>>","이미지 추가 후 리스트 : ${memoImageList.value}")
     }
-
+    // 이미지 삭제
     fun deleteImage(imagePath:String) {
         _memoImageList.value = memoImageList.value!!.also {
             it.remove(imagePath)
         }
     }
 
+    // 메모 작성 및 편집 후 저장!
     fun saveMemo(title:String, content:String) {
         // 새로 작성하는 것이므로 생성
         if(memoItem.value == null) {
@@ -59,6 +58,7 @@ class MemoViewModel(
             }
         }
 
+        // 로컬 DB에 insert 및 update
         viewModelScope.launch {
             memoUseCase.saveMemo(
                 memoItem.value!!,
@@ -69,11 +69,7 @@ class MemoViewModel(
         }
     }
 
-    fun changeMemoState(state: MemoState) {
-        _memoState.value = state
-        if(state == MemoState.MEMO_WRITE) refreshMemo()
-    }
-
+    // 메모 삭제
     fun deleteMemo() {
         memoItem.value?.let {
             viewModelScope.launch {
@@ -82,6 +78,12 @@ class MemoViewModel(
                 changeMemoState(MemoState.MEMO_DELETE_DONE)
             }
         }
+    }
+
+    fun changeMemoState(state: MemoState) {
+        _memoState.value = state
+        // 작성하는 경우는 기존에 viewModel에 있는 메모 관련 데이터 모두 초기화시킴
+        if(state == MemoState.MEMO_WRITE) refreshMemo()
     }
 
     // 메모 내용 초기화

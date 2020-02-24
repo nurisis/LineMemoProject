@@ -48,9 +48,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$archLifecycleVersion"
-//    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$archLifecycleVersion"
 
-    // Koin
+    // Koin - https://start.insert-koin.io/#/
     implementation "org.koin:koin-android:$koinVersion"
     implementation "org.koin:koin-androidx-viewmodel:$koinVersion"
 
@@ -58,11 +57,11 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navVersion"
 
-    //glide
+    //glide - https://bumptech.github.io/glide/
     implementation 'com.github.bumptech.glide:glide:4.10.0'
     kapt 'com.github.bumptech.glide:compiler:4.10.0'
 
-    // Ted permission
+    // Ted permission - https://github.com/ParkSangGwon/TedPermission
     implementation "gun0912.ted:tedpermission:$tedPermissionVersion"
 
     implementation project(path: ':data')

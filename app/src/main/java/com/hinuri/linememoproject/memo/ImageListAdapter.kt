@@ -1,5 +1,9 @@
 package com.hinuri.linememoproject.memo
 
+/**
+ * 메모에서 n개의 이미지를 보여주는 어뎁터
+ * */
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner

@@ -5,7 +5,7 @@ import androidx.room.*
 import com.hinuri.linememoproject.data.entity.Memo
 import com.hinuri.linememoproject.data.util.RoomConverters
 
-@Database(entities = [Memo::class], version = 4, exportSchema = false)
+@Database(entities = [Memo::class], version = 7, exportSchema = false)
 @TypeConverters(RoomConverters::class)
 
 abstract class LineDatabase : RoomDatabase() {

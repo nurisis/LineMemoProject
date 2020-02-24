@@ -9,19 +9,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
-<RelativeLayout
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff">
+
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/layout_memo_toolbar"/>
 
     <EditText
         android:id="@+id/et_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:padding="16dp"
+        android:textSize="18dp"
+        android:textStyle="bold"
         android:maxLines="1"
         android:text="@{viewModel.memoItem.title}"
         android:hint="제목이 궁금해요" />
+
+        <EditText
+            android:id="@+id/et_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:padding="16dp"
+            android:layout_below="@id/rv_image"
+            android:text="@{viewModel.memoItem.content}"
+            android:hint="내용이 궁금해요"/>
 
     <TextView
         android:id="@+id/btn_add_image"
@@ -42,25 +61,16 @@
         android:visibility="@{!viewModel.memoImageList.empty}"
         android:layout_below="@id/btn_add_image"/>
 
-    <EditText
-        android:id="@+id/et_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_below="@id/rv_image"
-        android:text="@{viewModel.memoItem.content}"
-        android:hint="내용이 궁금해요"/>
-
-    <TextView
-        android:id="@+id/btn_save"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/et_content"
-        android:text="저장 !!!"/>
+<!--    <TextView-->
+<!--        android:id="@+id/btn_save"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="48dp"-->
+<!--        android:gravity="center"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_below="@id/et_content"-->
+<!--        android:text="저장 !!!"/>-->
 
 
-</RelativeLayout>
+</LinearLayout>
 </androidx.core.widget.NestedScrollView>
 </layout>

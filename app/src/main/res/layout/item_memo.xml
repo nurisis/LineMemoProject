@@ -15,29 +15,31 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:onClick="@{() -> viewModel.clickMemoItem(item)}"
-    android:layout_marginBottom="16dp"
-    android:padding="16dp">
+    android:background="@drawable/bg_oval_outline_gray_8dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="5dp">
 
     <ImageView
         android:id="@+id/iv_thumbnail"
-        android:layout_width="76dp"
-        android:layout_height="76dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         android:layout_marginLeft="24dp"
         android:clickable="false"
         android:visibility="@{item.imageArr != null &amp;&amp; !item.imageArr.empty}"
-        app:imagePath="@{item.imageArr == null ? null : item.imageArr.get(0)}"/>
+        app:imagePath="@{item.imageArr.empty ? null : item.imageArr.get(0)}"/>
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
         android:clickable="false"
         android:layout_toLeftOf="@id/iv_thumbnail"
         android:textStyle="bold"
-        android:text="@{item.title}"
+        android:text='@{item.title.empty ? "제목 없음" : item.title}'
+        android:textSize="18dp"
         tools:text="Title"/>
 
     <TextView
@@ -46,6 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_alignRight="@id/tv_title"
         android:layout_below="@id/tv_title"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
         android:clickable="false"
         android:maxLines="2"
         android:ellipsize="end"

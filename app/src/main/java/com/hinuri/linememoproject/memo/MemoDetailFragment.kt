@@ -1,19 +1,17 @@
 package com.hinuri.linememoproject.memo
 
+/**
+ * 메모 상세 보기 화면
+ * */
+
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.hinuri.linememoproject.R
-import com.hinuri.linememoproject.data.entity.Memo
 import com.hinuri.linememoproject.databinding.FragmentMemoDetailBinding
-import com.hinuri.linememoproject.databinding.FragmentWriteMemoBinding
-import com.hinuri.linememoproject.entity.MemoState
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class MemoDetailFragment : Fragment() {
@@ -22,10 +20,6 @@ class MemoDetailFragment : Fragment() {
     private lateinit var viewDataBinding : FragmentMemoDetailBinding
     private lateinit var imageListAdapter: ImageListAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,8 +27,10 @@ class MemoDetailFragment : Fragment() {
         viewDataBinding = FragmentMemoDetailBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = this@MemoDetailFragment
             viewModel = memoViewModel
+            toolbar.viewModel = memoViewModel
         }
 
+        // 메모 내 이미지 리스트 관련 설정
         imageListAdapter = ImageListAdapter(memoViewModel)
         viewDataBinding.rvImage.apply {
             adapter = imageListAdapter
@@ -47,6 +43,7 @@ class MemoDetailFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        // 메모 내 이미지 리스트 옵저빙
         memoViewModel.memoImageList.observe(viewLifecycleOwner, Observer {
             imageListAdapter.submitList(it)
         })

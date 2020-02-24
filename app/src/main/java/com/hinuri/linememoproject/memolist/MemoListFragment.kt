@@ -12,6 +12,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hinuri.linememoproject.R
 import com.hinuri.linememoproject.common.Constant
+import com.hinuri.linememoproject.common.Constant.EXTRA_MEMO_DETAIL_KEY
 import com.hinuri.linememoproject.data.entity.Memo
 import com.hinuri.linememoproject.databinding.FragmentMemoListBinding
 import com.hinuri.linememoproject.memo.MemoActivity
@@ -40,13 +41,14 @@ class MemoListFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         }
 
+        // 메모가 0개 일 때 보이는 텍스트뷰. 클릭 시 메모 작성 화면으로 이동
         viewDataBinding.tvNoMemo.setOnClickListener {
             goToMemoActivity(Constant.EXTRA_MEMO_TYPE_WRITE)
         }
+        // 메모 작성 화면으로 이동
         viewDataBinding.fbAdd.setOnClickListener {
             goToMemoActivity(Constant.EXTRA_MEMO_TYPE_WRITE)
         }
-
 
         return viewDataBinding.root
     }
@@ -58,19 +60,23 @@ class MemoListFragment : Fragment() {
             listAdapter.submitList(it)
         })
 
+        // 사용자가 메모 리스트 중 특정 메모를 클릭했을 때 옵저빙. 메모 상세 페이지로 이동
         listViewModel.memoClicked.observe(viewLifecycleOwner, Observer {
             goToMemoActivity(Constant.EXTRA_MEMO_TYPE_VIEW, it)
         })
     }
 
+    /**
+     * 메모 상세(보기 또는 작성) 페이지로 이동
+     * */
     private fun goToMemoActivity(memoType:String, memoData:Memo? = null) {
         activity?.run {
             startActivity(
                 Intent(this, MemoActivity::class.java)
                     .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    .putExtra("type", memoType)
+                    .putExtra(Constant.EXTRA_MEMO_TYPE_KEY, memoType)
                     .apply {
-                        memoData?.let { putExtra("memo", it) }
+                        memoData?.let { putExtra(EXTRA_MEMO_DETAIL_KEY, it) }
                     }
             )
         }

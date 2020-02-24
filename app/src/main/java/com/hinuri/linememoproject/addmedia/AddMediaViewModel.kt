@@ -33,6 +33,10 @@ class AddMediaViewModel :ViewModel() {
         }
     }
 
+    /**
+     * Glide listener
+     * 이를 통해 이미지 링크 url의 유효 여부를 체크.
+     * */
     val glideListener = object : RequestListener<Drawable> {
         override fun onLoadFailed(
             e: GlideException?,
@@ -41,7 +45,6 @@ class AddMediaViewModel :ViewModel() {
             isFirstResource: Boolean
         ): Boolean {
             _isImageLinkValid.value = false
-            Log.e("LOG>>", "유효하지 않은 링크!")
             return true
         }
 
@@ -53,8 +56,7 @@ class AddMediaViewModel :ViewModel() {
             isFirstResource: Boolean
         ): Boolean {
             _isImageLinkValid.value = true
-            Log.d("LOG>>", "유효한 링크!")
-            return false
+            return true
         }
     }
 }

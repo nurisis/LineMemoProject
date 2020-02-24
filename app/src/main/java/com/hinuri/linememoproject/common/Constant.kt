@@ -8,16 +8,19 @@ import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import android.util.Log
-
 
 object Constant {
+    // Bundle 사용 시 키값들
     const val EXTRA_MEMO_TYPE_WRITE = "write"
     const val EXTRA_MEMO_TYPE_VIEW = "view"
+    const val EXTRA_MEMO_TYPE_KEY = "type"
+    const val EXTRA_MEMO_DETAIL_KEY = "memo"
+    const val EXTRA_MEMO_IMAGE_FROM_CAMERA = "camera"
+    const val EXTRA_MEMO_IMAGE_FROM_GALLERY = "gallery"
 
-    // ==========================
-    // get absolute path from Uri
-    // ==========================
+    /**
+     * 이미지 Uri를 받아 파일의 절대경로를 리턴함
+     */
     fun getAbsolutePath(context: Context, uri: Uri): String? {
         val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
         // Document Provider
@@ -26,7 +29,7 @@ object Constant {
             if (isExternalStorageDocument(uri)) {
                 val docId = DocumentsContract.getDocumentId(uri)
                 val split =
-                    docId.split(":".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+                    docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                 val type = split[0]
 
                 if ("primary".equals(type, ignoreCase = true)) {
@@ -76,7 +79,7 @@ object Constant {
         return null
     }
 
-    fun getDataColumn(
+    private fun getDataColumn(
         context: Context,
         uri: Uri?,
         selection: String?,
@@ -102,15 +105,15 @@ object Constant {
         return null
     }
 
-    fun isExternalStorageDocument(uri: Uri): Boolean {
+    private fun isExternalStorageDocument(uri: Uri): Boolean {
         return "com.android.externalstorage.documents" == uri.getAuthority()
     }
 
-    fun isDownloadsDocument(uri: Uri): Boolean {
+    private fun isDownloadsDocument(uri: Uri): Boolean {
         return "com.android.providers.downloads.documents" == uri.getAuthority()
     }
 
-    fun isMediaDocument(uri: Uri): Boolean {
+    private fun isMediaDocument(uri: Uri): Boolean {
         return "com.android.providers.media.documents" == uri.getAuthority()
     }
 

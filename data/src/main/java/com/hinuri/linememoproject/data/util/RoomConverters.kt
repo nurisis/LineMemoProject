@@ -1,8 +1,10 @@
 package com.hinuri.linememoproject.data.util
 
-import android.util.Log
+/**
+ * Room에 원시 타입 외의 값이 저장되어야 할 때 DB에 저장될 수 있도록 값을 변환해줌.
+ */
+
 import androidx.room.TypeConverter
-import java.util.*
 import kotlin.collections.ArrayList
 
 class RoomConverters {
@@ -27,8 +29,8 @@ class RoomConverters {
         if(imageString == null) return null
 
         return ArrayList<String>().apply {
-            imageString?.split("@")?.forEach {
-                add(it)
+            imageString?.split("@").forEach {
+                if(it.isNotEmpty()) add(it)
             }
         }
     }
