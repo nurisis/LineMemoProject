@@ -21,8 +21,7 @@ class MemoListAdapter(private val viewModel: MemoListViewModel) : ListAdapter<Me
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = getItem(position)
-        holder.bind(item)
+        holder.bind(getItem(position))
     }
 
     class ViewHolder private constructor(private val binding: ItemMemoBinding, private val viewModel: MemoListViewModel) : RecyclerView.ViewHolder(binding.root) {

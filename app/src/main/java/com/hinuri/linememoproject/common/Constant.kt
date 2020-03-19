@@ -90,8 +90,10 @@ object Constant {
         val projection = arrayOf(column)
 
         try {
-            cursor =
-                context.getContentResolver().query(uri, projection, selection, selectionArgs, null)
+            uri?.let {
+                cursor = context.contentResolver.query(it, projection, selection, selectionArgs, null)
+            }
+
             if (cursor != null && cursor!!.moveToFirst()) {
                 val column_index = cursor!!.getColumnIndexOrThrow(column)
                 return cursor!!.getString(column_index)

@@ -30,7 +30,6 @@ class MemoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo)
 
-
         navController = Navigation.findNavController(this,
             R.id.fragment_nav_memo
         )

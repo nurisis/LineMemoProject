@@ -20,7 +20,6 @@ import com.gun0912.tedpermission.TedPermission
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -43,7 +42,7 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddMediaToMemoDialog : DialogFragment() {
+class AddMediaToMemoDialog_v2 : DialogFragment() {
 
     private lateinit var viewDataBinding:DialogSelectImageTypeBinding
     private val mediaViewModel by sharedViewModel<AddMediaViewModel>()
@@ -145,25 +144,36 @@ class AddMediaToMemoDialog : DialogFragment() {
     private fun callCameraApp() {
         activity?.let {activity ->
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-                // Ensure that there's a camera activity to handle the intent
                 takePictureIntent.resolveActivity(activity.packageManager)?.also {
-                    // 이미지 파일이 존재할 경우에만 카메라앱 실행
-                    tempFile = createImageFile()
-                    tempFile?.also {
-                        val photoURI: Uri =  if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            FileProvider.getUriForFile(
-                                activity
-                                ,BuildConfig.APPLICATION_ID + ".provider"
-                                , it)
-                        } else {
-                            Uri.fromFile(it)
-                        }
+                    try {
+                        // 1. 촬영할 사진을 담을 파일 생성
+                        // 2. 위에서 생성한 이미지 파일이 존재할 경우에만 카메라앱 실행
+                        val uri = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                            savePhotoQ()
+                        else
+                            createImageFile()
 
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                        startActivityForResult(takePictureIntent, TAKE_PHOTO_CODE)
+                        Log.d("LOG>>","uri : $uri")
+                        Log.d("LOG>>","path : $cameraImagePath")
+
+                        uri?.also {
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, it)
+                            startActivityForResult(takePictureIntent, TAKE_PHOTO_CODE)
+                        }
+                    } catch (ex: IOException) {
+                        // 이미지 파일을 생성하는데 에러 남.
+                        Toast.makeText(activity, "카메라 앱을 실행하는데 에러가 발생했습니다.", Toast.LENGTH_LONG).show()
                     }
+
                 }
             }
+
+//            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+//                takePictureIntent.resolveActivity(activity.packageManager)?.also {
+//                    startActivityForResult(takePictureIntent, TAKE_PHOTO_CODE)
+//                }
+//            }
+
         }
     }
 
@@ -182,18 +192,41 @@ class AddMediaToMemoDialog : DialogFragment() {
      * 경로 : /DCIM/APP_NAME
      */
     @Throws(IOException::class)
-    fun createImageFile() : File {
-        // 이미지가 저장될 디렉토리
-        val storageDir: File? = context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            SimpleDateFormat("yyMMdd_HH:mm:ss").format(Date()), /* prefix */
-            ".jpeg", /* suffix */
-            storageDir /* directory */
+    private fun createImageFile() : Uri? {
+        val storageDir = File(
+            Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM
+            )
+            , activity?.getString(R.string.app_name) ?: "LineMemo"
         )
+
+        // 해당 폴더가 없으면 생성
+        if(!storageDir.exists())
+            storageDir.mkdir()
+
+        val image = File.createTempFile(
+            SimpleDateFormat("YYYY_MM_dd_HH:mm:ss").format(Date()), /* prefix */
+            ".jpg", /* suffix */
+            storageDir      /* directory */
+        )
+
+        cameraImagePath = image.absolutePath
+
+        // 위에서 생성한 파일의 uri를 리턴
+        return context?.let {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                FileProvider.getUriForFile(
+                    it
+                    , BuildConfig.APPLICATION_ID + ".provider"
+                    , image)
+            }
+            else
+                Uri.fromFile(image)
+        }
     }
 
     @Throws(IOException::class)
-    private fun savePhotoQ(bitmap: Bitmap) : Uri? {
+    private fun savePhotoQ() : Uri? {
         val relativePath = Environment.DIRECTORY_PICTURES + File.separator + (activity?.getString(R.string.app_name) ?: "LineMemo")
         val fileName = SimpleDateFormat("YYYY_MM_dd_HH:mm:ss").format(Date())+".jpg"
         val mimeType = "image/*"
@@ -216,63 +249,60 @@ class AddMediaToMemoDialog : DialogFragment() {
             return null
         }
 
-        var outputStream = resolver!!.openOutputStream(item)
+        context?.let { cameraImagePath = Constant.getAbsolutePath(it, item) }
 
-        if(outputStream == null)
-            Log.e("LOG>>","Failed to get output stream.")
+        tempFile = File(cameraImagePath)
+        Log.d("LOG>>","uri.path  :${item.path}")
 
-        val saved = bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
-        if(!saved)
-            Log.e("LOG>>","파일을 저장하는데 실패 ..했 ....")
-
-        values.clear()
-        values.put(MediaStore.Images.Media.IS_PENDING, 0)
-        resolver.update(item, values, null, null)
-
-        Log.d("LOG>>", "[Q]사진 촬영 후 uri : $item")
+//        var outputStream = resolver!!.openOutputStream(item)
+//
+//        if(outputStream == null)
+//            Log.e("LOG>>","Failed to get output stream.")
+//
+//        val saved = bitmap?.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
+//        if(!saved)
+//            Log.e("LOG>>","파일을 저장하는데 실패 ..했 ....")
+//
+//        values.clear()
+//        values.put(MediaStore.Images.Media.IS_PENDING, 0)
+//        resolver.update(item, values, null, null)
+//
+//        Log.d("LOG>>", "[Q]사진 촬영 후 uri : $item")
 
         return item
     }
 
     @Throws(IOException::class)
-    private fun savePhotoP(bitmap: Bitmap) : Uri? {
-        val relativePath = Environment.DIRECTORY_PICTURES + File.separator + (activity?.getString(R.string.app_name) ?: "LineMemo")
+    private fun savePhotoP(bitmap: Bitmap) : String {
         val fileName = SimpleDateFormat("YYYY_MM_dd_HH:mm:ss").format(Date())+".jpg"
         val mimeType = "image/*"
 
-        val values = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-            put(MediaStore.Images.Media.MIME_TYPE, mimeType)
-            put(MediaStore.Images.Media.IS_PENDING, 1)
-            put(MediaStore.Images.Media.DATA, relativePath + File.separator + fileName)
-        }
+        val storageDir = File(
+            Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM
+            )
+            , activity?.getString(R.string.app_name) ?: "LineMemo"
+        )
 
-        val resolver = context?.contentResolver ?: return null
+        // 해당 폴더가 없으면 생성
+        if(!storageDir.exists())
+            storageDir.mkdir()
 
-        val collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        val item = resolver.insert(collection, values)
+        val absolutePath = storageDir.absolutePath + File.separator + fileName
+        Log.d("LOG>>","절대 경로 : $absolutePath")
 
-        if(item == null) {
-            Log.e("LOG>>","Failed to create new  MediaStore record.")
-            return null
-        }
+        val file = File(absolutePath)
+        file.createNewFile()
 
-        var outputStream = resolver!!.openOutputStream(item)
-
-        if(outputStream == null)
-            Log.e("LOG>>","Failed to get output stream.")
-
-        val saved = bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+        var outputStream = FileOutputStream(file)
+        val saved = bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
         if(!saved)
             Log.e("LOG>>","파일을 저장하는데 실패 ..했 ....")
 
-        values.clear()
-        values.put(MediaStore.Images.Media.IS_PENDING, 0)
-        resolver.update(item, values, null, null)
+        Log.d("LOG>>", "[Under Q]사진 촬영 후 path : $absolutePath")
+        notifyGallery(file)
 
-        Log.d("LOG>>", "[Q]사진 촬영 후 uri : $item")
-
-        return item
+        return absolutePath
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -281,18 +311,16 @@ class AddMediaToMemoDialog : DialogFragment() {
         when(requestCode) {
             // 카메라 촬영 후
             TAKE_PHOTO_CODE -> {
-                Log.d("LOG>>", "결과  :$resultCode")
-                Log.d("LOG>>","파일 있어? ${tempFile?.exists()}, path : ${tempFile?.absolutePath}")
+                Log.d("LOG>>", "결과  :$resultCode, cameraImagePath : $cameraImagePath")
+                Log.d("LOG>>","파일 있어? ${tempFile?.exists()}")
 
-                val bitmap = BitmapFactory.decodeFile(tempFile?.absolutePath)
+                onMediaDialogResult?.getImagePath(imagePath = cameraImagePath)
+                notifyGallery(File(cameraImagePath))
 
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                    savePhotoQ(bitmap)
-                else
-                    savePhotoP(bitmap)
-
-                onMediaDialogResult?.getImagePath(imagePath = tempFile?.absolutePath)
-
+//                if(resultCode == Activity.RESULT_OK) {
+//                    onMediaDialogResult?.getImagePath(imagePath = cameraImagePath)
+//                    notifyGallery(File(cameraImagePath))
+//                }
             }
             // 갤러리에서 이미지 선택 후
             GALLERY_PHOTO_CODE -> {
@@ -376,6 +404,6 @@ class AddMediaToMemoDialog : DialogFragment() {
     }
 
     companion object {
-        fun newInstance() = AddMediaToMemoDialog()
+        fun newInstance() = AddMediaToMemoDialog_v2()
     }
 }
