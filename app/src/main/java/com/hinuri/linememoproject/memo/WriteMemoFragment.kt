@@ -83,6 +83,7 @@ class WriteMemoFragment : Fragment() {
                     // 카메라 및 갤러리에서 사진 받아올 경우
                     override fun getImagePath(imagePath: String?) {
                         imagePath?.let {
+                            Log.d("LOG>>", "이미지 경로  :$imagePath")
                             //이미지를 정상적으로 받아왔을 때 -> 리스트에 이미지 추가
                             memoViewModel.addImage(it)
                         }  ?: Toast.makeText(activity,"이미지를 업로드하는데 실패했습니다\uD83D\uDE2D",Toast.LENGTH_LONG).show()

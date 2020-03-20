@@ -15,4 +15,17 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Bottom Nav Bar -->
+    <style name="BottomNavigationActive"  parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:lineHeight">9sp</item>
+    </style>
+
+    <style name="BottomNavigationInactive"  parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:textColor">@color/bnv_inactive</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:lineHeight">9sp</item>
+    </style>
+
 </resources>

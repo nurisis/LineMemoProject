@@ -24,6 +24,8 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.os.Environment.getExternalStorageDirectory
+import android.os.Environment.getExternalStoragePublicDirectory
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
@@ -66,7 +68,7 @@ class AddMediaToMemoDialog : DialogFragment() {
     ): View? {
 
         viewDataBinding = DialogSelectImageTypeBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = activity
+            lifecycleOwner = this@AddMediaToMemoDialog
         }
 
         // 카메라 실행
@@ -148,8 +150,8 @@ class AddMediaToMemoDialog : DialogFragment() {
                 // Ensure that there's a camera activity to handle the intent
                 takePictureIntent.resolveActivity(activity.packageManager)?.also {
                     // 이미지 파일이 존재할 경우에만 카메라앱 실행
-                    tempFile = createImageFile()
-                    tempFile?.also {
+                    mediaViewModel.imageFile = createImageFile()
+                    mediaViewModel.imageFile?.also {
                         val photoURI: Uri =  if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                             FileProvider.getUriForFile(
                                 activity
@@ -179,17 +181,89 @@ class AddMediaToMemoDialog : DialogFragment() {
 
     /**
      * 촬영한 사진을 담기 위한 파일을 만듬
-     * 경로 : /DCIM/APP_NAME
+     * 경로 : 앱의 개별 저장소/Pictures/APP_NAME
      */
     @Throws(IOException::class)
     fun createImageFile() : File {
-        // 이미지가 저장될 디렉토리
-        val storageDir: File? = context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            SimpleDateFormat("yyMMdd_HH:mm:ss").format(Date()), /* prefix */
-            ".jpeg", /* suffix */
-            storageDir /* directory */
-        )
+        // api 29부터는, MediaStore로 파일을 저장해야하므로, 여기서는 일단 앱 내 저장소에서 파일을 만듬.
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            // 이미지가 저장될 디렉토리
+            val storageDir: File? = context?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            // 이미지를 담을 파일 생성
+            return File.createTempFile(
+                SimpleDateFormat("yyMMdd_HH:mm:ss").format(Date()), /* prefix */
+                ".jpeg", /* suffix */
+                storageDir /* directory */
+            )
+        }
+        // api 28 이하의 경우, 바로 디바이스 앨범에 이미지를 담을 파일을 생성함
+        else {
+            val storageDir = File(
+                Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DCIM
+                )
+                , activity?.getString(R.string.app_name) ?: "LineMemo"
+            )
+
+            // 해당 폴더가 없으면 생성
+            if(!storageDir.exists())
+                storageDir.mkdir()
+
+            // 이미지를 담을 파일 생성
+            return File.createTempFile(
+                SimpleDateFormat("yyMMdd_HH:mm:ss").format(Date()), /* prefix */
+                ".jpeg", /* suffix */
+                storageDir /* directory */
+            )
+        }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when(requestCode) {
+            // 카메라 촬영 후
+            TAKE_PHOTO_CODE -> {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                    mediaViewModel.imageFile?.let {
+                        // 앱 내부 저장소에 저장한 이미지 파일을 사용자 앨범에 저장해줌.
+                        val uri = savePhotoQ(BitmapFactory.decodeFile(it.absolutePath))
+                        onMediaDialogResult?.getImagePath(imagePath = uri?.toString())
+                    }
+                }
+                else {
+                    onMediaDialogResult?.getImagePath(imagePath = mediaViewModel.imageFile?.absolutePath)
+                    notifyGallery(mediaViewModel.imageFile)
+                }
+
+            }
+            // 갤러리에서 이미지 선택 후
+            GALLERY_PHOTO_CODE -> {
+                if(resultCode == Activity.RESULT_OK) {
+                    if(data?.data != null) {
+                        context?.run {
+                            Log.d("LOG>>", " data : ${data.data!!}")
+                            onMediaDialogResult?.getImagePath(imagePath = Constant.getAbsolutePath(this, data.data!!))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 앨범에 새로운 사진이 추가되었다고 알림.
+     * */
+    private fun notifyGallery(imageFile:File?) {
+        imageFile?.let {
+            activity?.sendBroadcast(
+                Intent(
+                    Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                    Uri.fromFile(it)
+                )
+            )
+        }
     }
 
     @Throws(IOException::class)
@@ -221,7 +295,7 @@ class AddMediaToMemoDialog : DialogFragment() {
         if(outputStream == null)
             Log.e("LOG>>","Failed to get output stream.")
 
-        val saved = bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+        val saved = bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
         if(!saved)
             Log.e("LOG>>","파일을 저장하는데 실패 ..했 ....")
 
@@ -232,135 +306,6 @@ class AddMediaToMemoDialog : DialogFragment() {
         Log.d("LOG>>", "[Q]사진 촬영 후 uri : $item")
 
         return item
-    }
-
-    @Throws(IOException::class)
-    private fun savePhotoP(bitmap: Bitmap) : Uri? {
-        val relativePath = Environment.DIRECTORY_PICTURES + File.separator + (activity?.getString(R.string.app_name) ?: "LineMemo")
-        val fileName = SimpleDateFormat("YYYY_MM_dd_HH:mm:ss").format(Date())+".jpg"
-        val mimeType = "image/*"
-
-        val values = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-            put(MediaStore.Images.Media.MIME_TYPE, mimeType)
-            put(MediaStore.Images.Media.IS_PENDING, 1)
-            put(MediaStore.Images.Media.DATA, relativePath + File.separator + fileName)
-        }
-
-        val resolver = context?.contentResolver ?: return null
-
-        val collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        val item = resolver.insert(collection, values)
-
-        if(item == null) {
-            Log.e("LOG>>","Failed to create new  MediaStore record.")
-            return null
-        }
-
-        var outputStream = resolver!!.openOutputStream(item)
-
-        if(outputStream == null)
-            Log.e("LOG>>","Failed to get output stream.")
-
-        val saved = bitmap?.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
-        if(!saved)
-            Log.e("LOG>>","파일을 저장하는데 실패 ..했 ....")
-
-        values.clear()
-        values.put(MediaStore.Images.Media.IS_PENDING, 0)
-        resolver.update(item, values, null, null)
-
-        Log.d("LOG>>", "[Q]사진 촬영 후 uri : $item")
-
-        return item
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        when(requestCode) {
-            // 카메라 촬영 후
-            TAKE_PHOTO_CODE -> {
-                Log.d("LOG>>", "결과  :$resultCode")
-                Log.d("LOG>>","파일 있어? ${tempFile?.exists()}, path : ${tempFile?.absolutePath}")
-
-                val bitmap = BitmapFactory.decodeFile(tempFile?.absolutePath)
-
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                    savePhotoQ(bitmap)
-                else
-                    savePhotoP(bitmap)
-
-                onMediaDialogResult?.getImagePath(imagePath = tempFile?.absolutePath)
-
-            }
-            // 갤러리에서 이미지 선택 후
-            GALLERY_PHOTO_CODE -> {
-                if(resultCode == Activity.RESULT_OK) {
-                    if(data?.data != null) {
-                        context?.run {
-                            onMediaDialogResult?.getImagePath(imagePath = Constant.getAbsolutePath(this, data.data!!))
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        when(requestCode) {
-//            // 카메라 촬영 후
-//            TAKE_PHOTO_CODE -> {
-//                if(resultCode == Activity.RESULT_OK) {
-//
-//                    data?.extras?.get("data")?.apply {
-//                        var uri:Uri? = null
-//
-//                        try {
-//                            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-//                                uri = savePhotoQ(this as Bitmap)
-//                            else
-//                                savePhotoP(this as Bitmap)
-//                        }catch (e:Exception) {
-//                            Log.e("LOG>>","에러 : $e")
-//                        }
-//
-//                        uri?.let { cameraImagePath = Constant.getAbsolutePath(context!!, it) }.also {
-//                            Log.d("LOG>>", "사진 촬영 후 path : $cameraImagePath")
-//                        }
-//
-//                        onMediaDialogResult?.getImagePath(imagePath = cameraImagePath)
-//                        cameraImagePath?.let { notifyGallery(File(it)) }
-//                    }
-//                }
-//            }
-//            // 갤러리에서 이미지 선택 후
-//            GALLERY_PHOTO_CODE -> {
-//                if(resultCode == Activity.RESULT_OK) {
-//                    if(data?.data != null) {
-//                        context?.run {
-//                            onMediaDialogResult?.getImagePath(imagePath = Constant.getAbsolutePath(this, data.data!!))
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-    /**
-     * 앨범에 새로운 사진이 추가되었다고 알림.
-     * */
-    private fun notifyGallery(imageFile:File?) {
-        imageFile?.let {
-            activity?.sendBroadcast(
-                Intent(
-                    Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                    Uri.fromFile(it)
-                )
-            )
-        }
     }
 
     /**

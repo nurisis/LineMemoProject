@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_home"
+        android:title="홈"
+        android:icon="@drawable/ic_home_black_24dp"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/action_profile"
+        android:title="프로필"
+        android:icon="@drawable/ic_person_black_24dp"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/action_support"
+        android:title="더보기"
+        android:icon="@drawable/ic_settings_black_24dp"
+        app:showAsAction="always"
+        />
+</menu>
