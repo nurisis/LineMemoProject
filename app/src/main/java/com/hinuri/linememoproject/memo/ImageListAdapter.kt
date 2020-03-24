@@ -4,6 +4,7 @@ package com.hinuri.linememoproject.memo
  * 메모에서 n개의 이미지를 보여주는 어뎁터
  * */
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
@@ -53,10 +54,10 @@ class ImageListAdapter(private val viewModel: MemoViewModel) : ListAdapter<Strin
 
 private class ImageListDiffCallback : DiffUtil.ItemCallback<String>() {
     override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
-        return oldItem == newItem
+        return (oldItem == newItem)
     }
 
     override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
-        return oldItem == newItem
+        return (oldItem == newItem)
     }
 }

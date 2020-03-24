@@ -9,7 +9,7 @@ data class Memo(
     @PrimaryKey(autoGenerate = true) var id:Int = 0,
     var title:String = "",
     var content:String = "",
-    var imageArr:MutableList<String> = mutableListOf(),
+    var imageArr:List<String> = emptyList(),
     var createdTime:String = "",
     var updatedTime:String = ""
 ) : Serializable

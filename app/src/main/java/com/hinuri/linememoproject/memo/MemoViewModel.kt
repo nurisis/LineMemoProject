@@ -16,8 +16,8 @@ class MemoViewModel(
     private val _memoItem = MutableLiveData<Memo>()
     val memoItem : LiveData<Memo> = _memoItem
 
-    private val _memoImageList = MutableLiveData<MutableList<String>>()
-    val memoImageList : LiveData<MutableList<String>> = _memoImageList
+    private val _memoImageList = MutableLiveData<List<String>>()
+    val memoImageList : LiveData<List<String>> = _memoImageList
 
     // 현재 메모의 상태 (보기, 작성, 편집 등)
     private val _memoState = MutableLiveData<MemoState>()
@@ -32,13 +32,17 @@ class MemoViewModel(
 
     // 이미지 추가
     fun addImage(imagePath: String) {
-        _memoImageList.value = memoImageList.value!!.apply { add(imagePath) }
+        var newImageList = listOf(imagePath)
+        newImageList += memoImageList.value!!
+
+        _memoImageList.value = newImageList
     }
     // 이미지 삭제
     fun deleteImage(imagePath:String) {
-        _memoImageList.value = memoImageList.value!!.also {
-            it.remove(imagePath)
-        }
+        var newImageList = memoImageList.value!!
+        newImageList -= imagePath
+
+        _memoImageList.value = newImageList
     }
 
     // 메모 작성 및 편집 후 저장!
