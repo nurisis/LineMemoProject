@@ -18,7 +18,7 @@ class MemoRepository(
      * */
     suspend fun getAllMemo() : LiveData<List<Memo>> {
         return withContext(ioDispatcher) {
-            return@withContext memoLocalDataSource.getAllMemo()
+            memoLocalDataSource.getAllMemo()
         }
     }
 
@@ -27,7 +27,7 @@ class MemoRepository(
      * */
     suspend fun insertMemo(memo:Memo) {
         return withContext(ioDispatcher) {
-            return@withContext memoLocalDataSource.insertMemo(memo)
+            memoLocalDataSource.insertMemo(memo)
         }
     }
 
@@ -36,7 +36,7 @@ class MemoRepository(
      * */
     suspend fun updateMemo(memo:Memo) {
         return withContext(ioDispatcher) {
-            return@withContext memoLocalDataSource.updateMemo(memo)
+            memoLocalDataSource.updateMemo(memo)
         }
     }
 
@@ -45,7 +45,7 @@ class MemoRepository(
      * */
     suspend fun deleteMemo(memo:Memo) {
         return withContext(ioDispatcher) {
-            return@withContext memoLocalDataSource.deleteMemo(memo)
+            memoLocalDataSource.deleteMemo(memo)
         }
     }
 }

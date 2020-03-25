@@ -53,13 +53,10 @@ class AddMediaToMemoDialog : DialogFragment() {
     private var onMediaDialogResult: OnMediaDialogResult? = null
 
     private var imageType : String? = null // 이미지를 어떻게 추가할 것인지 옵션. 카메라 또는 갤러리
-    private var cameraImagePath : String? = null // 카메라로 촬영 후 담는 이미지 절대경로
     private var imageLink : String? = null // 링크 추가 시 링크 url
 
     private val TAKE_PHOTO_CODE = 111
     private val GALLERY_PHOTO_CODE = 222
-
-    private var tempFile:File? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
