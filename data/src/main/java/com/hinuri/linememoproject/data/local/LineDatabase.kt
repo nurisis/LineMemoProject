@@ -12,27 +12,55 @@ abstract class LineDatabase : RoomDatabase() {
 
     abstract fun memoDao() : MemoDao
 
+    /**
+     * Double-check Locking 적용
+     * */
     companion object{
-
-        @Volatile
-        private var INSTANCE : LineDatabase? = null
+        private var INSTANCE : LineDatabase? = null // Double checked
 
         fun getDatabase(context: Context) : LineDatabase {
+            if(INSTANCE == null) {  // Single Checked
 
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    LineDatabase::class.java,
-                    "line_database"
-                )
-                    .fallbackToDestructiveMigration()
-                    .build()
-
-                INSTANCE = instance
-                instance
+                synchronized(LineDatabase::class.java) {
+                    if(INSTANCE == null) // Double checked
+                        INSTANCE = Room.databaseBuilder(
+                            context.applicationContext,
+                            LineDatabase::class.java,
+                            "line_database"
+                        )
+                            .fallbackToDestructiveMigration()
+                            .build()
+                }
+                
             }
 
+            return INSTANCE!!
         }
-
     }
+
+    /**
+     * 기존 코드
+     * */
+//    companion object{
+//
+//        @Volatile
+//        private var INSTANCE : LineDatabase? = null
+//
+//        fun getDatabase(context: Context) : LineDatabase {
+//
+//            return INSTANCE ?: synchronized(this) {
+//                val instance = Room.databaseBuilder(
+//                    context.applicationContext,
+//                    LineDatabase::class.java,
+//                    "line_database"
+//                )
+//                    .fallbackToDestructiveMigration()
+//                    .build()
+//
+//                INSTANCE = instance
+//                instance
+//            }
+//
+//        }
+//    }
 }
