@@ -24,7 +24,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-
+        maven { url "https://oss.jfrog.org/libs-snapshot" }
     }
 }
 
@@ -48,9 +48,13 @@ ext {
     glideVersion = '4.9.0'
     rxAndroidVersion = '2.1.1'
     rxJava = '2.2.10'
-    roomVersion = '2.2.2'
+//    roomVersion = '2.2.2'
+    roomVersion = '2.3.0-alpha02'
     koinVersion = '2.0.1'
     fragmentVersion = '1.1.0'
+
+    rxjavaVersion = '3.0.7'
+    rxandroidVersion = '3.0.0'
 
     mockVersion = '2.28.2'
     androidXTestVersion = '1.1.0'

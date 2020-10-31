@@ -3,6 +3,7 @@ package com.hinuri.linememoproject.data.repository
 import androidx.lifecycle.LiveData
 import com.hinuri.linememoproject.data.entity.Memo
 import com.hinuri.linememoproject.data.local.MemoLocalDataSource
+import io.reactivex.rxjava3.core.Flowable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -16,11 +17,14 @@ class MemoRepository(
     /**
      * 모든 메모 리스트 호출
      * */
-    suspend fun getAllMemo() : LiveData<List<Memo>> {
-        return withContext(ioDispatcher) {
-            memoLocalDataSource.getAllMemo()
-        }
+    fun getAllMemo() : Flowable<List<Memo>> {
+        return memoLocalDataSource.getAllMemo()
     }
+//    suspend fun getAllMemo() : LiveData<List<Memo>> {
+//        return withContext(ioDispatcher) {
+//            memoLocalDataSource.getAllMemo()
+//        }
+//    }
 
     /**
      * 메모 작성 후 insert

@@ -9,14 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hinuri.linememoproject.databinding.ItemMemoBinding
 import com.hinuri.linememoproject.data.entity.Memo
 
-class MemoListAdapter(private val viewModel: MemoListViewModel) : ListAdapter<Memo, MemoListAdapter.ViewHolder>(
+class MemoListAdapter() : ListAdapter<Memo, MemoListAdapter.ViewHolder>(
     MemoListDiffCallback()
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(
-            parent,
-            viewModel
+            parent
         )
     }
 
@@ -24,23 +23,21 @@ class MemoListAdapter(private val viewModel: MemoListViewModel) : ListAdapter<Me
         holder.bind(getItem(position))
     }
 
-    class ViewHolder private constructor(private val binding: ItemMemoBinding, private val viewModel: MemoListViewModel) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder private constructor(private val binding: ItemMemoBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Memo) {
             binding.apply {
                 setItem(item)
-                viewModel = this@ViewHolder.viewModel
                 lifecycleOwner = binding.root.context as LifecycleOwner
             }.executePendingBindings()
         }
 
         companion object {
-            fun from(parent: ViewGroup, viewModel: MemoListViewModel) : ViewHolder {
+            fun from(parent: ViewGroup) : ViewHolder {
                 return ViewHolder(
                     ItemMemoBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false),
-                    viewModel
+                        false)
                 )
             }
         }

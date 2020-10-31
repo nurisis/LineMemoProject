@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
-    <data>
-        <variable
-            name="viewModel"
-            type="com.hinuri.linememoproject.memolist.MemoListViewModel" />
-    </data>
 
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,8 +18,7 @@
         android:layout_height="wrap_content"
         android:text="메모를 추가해주세요 🎅"
         android:textSize="18sp"
-        android:layout_centerInParent="true"
-        android:visibility="@{viewModel.memoLists.empty}"/>
+        android:layout_centerInParent="true"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fb_add"

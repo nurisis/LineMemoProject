@@ -74,6 +74,10 @@ dependencies {
     // Ted permission - https://github.com/ParkSangGwon/TedPermission
     implementation "gun0912.ted:tedpermission:$tedPermissionVersion"
 
+    // RxJava
+    implementation "io.reactivex.rxjava3:rxjava:$rxjavaVersion"
+    implementation "io.reactivex.rxjava3:rxandroid:$rxandroidVersion"
+
     implementation project(path: ':data')
     implementation project(path: ':entity')
 }
