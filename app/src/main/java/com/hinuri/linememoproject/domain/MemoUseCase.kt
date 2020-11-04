@@ -20,26 +20,35 @@ class MemoUseCase(
         return memoRepository.getAllMemo()
     }
 
-//    suspend fun getAllMemo() : LiveData<List<Memo>> {
-//        return memoRepository.getAllMemo()
-//    }
-
-    suspend fun saveMemo(memo:Memo, memoState: MemoState) {
+    fun saveMemo(memo:Memo, isNew:Boolean) {
         val updateTime = SimpleDateFormat("YYYY_MM_dd_HH:mm:ss").format(Date())
 
-        when(memoState) {
-            MemoState.MEMO_WRITE ->  {
-                memoRepository.insertMemo(memo.apply {
-                    createdTime = updateTime
-                    updatedTime = updateTime
-                })
-            }
-            // 편집 후 저장하는 것이므로, updatedTime만 업데이트 해줌.
-            MemoState.MEMO_EDIT -> {
-                memoRepository.updateMemo(memo.apply { updatedTime = updateTime })
-            }
+        if(isNew) {
+            memoRepository.insertMemo(memo.apply {
+                createdTime = updateTime
+                updatedTime = updateTime
+            })
         }
+        // 편집 후 저장하는 것이므로, updatedTime만 업데이트 해줌.
+        else memoRepository.updateMemo(memo.apply { updatedTime = updateTime })
     }
+
+//    suspend fun saveMemo(memo:Memo, memoState: MemoState) {
+//        val updateTime = SimpleDateFormat("YYYY_MM_dd_HH:mm:ss").format(Date())
+//
+//        when(memoState) {
+//            MemoState.MEMO_WRITE ->  {
+//                memoRepository.insertMemo(memo.apply {
+//                    createdTime = updateTime
+//                    updatedTime = updateTime
+//                })
+//            }
+//            // 편집 후 저장하는 것이므로, updatedTime만 업데이트 해줌.
+//            MemoState.MEMO_EDIT -> {
+//                memoRepository.updateMemo(memo.apply { updatedTime = updateTime })
+//            }
+//        }
+//    }
 
     suspend fun deleteMemo(memo:Memo) {
         memoRepository.deleteMemo(memo)

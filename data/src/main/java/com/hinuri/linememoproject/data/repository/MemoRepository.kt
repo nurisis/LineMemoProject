@@ -29,20 +29,26 @@ class MemoRepository(
     /**
      * 메모 작성 후 insert
      * */
-    suspend fun insertMemo(memo:Memo) {
-        return withContext(ioDispatcher) {
-            memoLocalDataSource.insertMemo(memo)
-        }
+    fun insertMemo(memo:Memo) {
+        return memoLocalDataSource.insertMemo(memo)
     }
+//    suspend fun insertMemo(memo:Memo) {
+//        return withContext(ioDispatcher) {
+//            memoLocalDataSource.insertMemo(memo)
+//        }
+//    }
 
     /**
      * 메모 작성 후 update
      * */
-    suspend fun updateMemo(memo:Memo) {
-        return withContext(ioDispatcher) {
-            memoLocalDataSource.updateMemo(memo)
-        }
+    fun updateMemo(memo:Memo) {
+        memoLocalDataSource.updateMemo(memo)
     }
+//    suspend fun updateMemo(memo:Memo) {
+//        return withContext(ioDispatcher) {
+//            memoLocalDataSource.updateMemo(memo)
+//        }
+//    }
 
     /**
      * 메모 삭제

@@ -19,13 +19,21 @@ class MemoLocalDataSource (
 //        memoDao.getAllMemo()
 //    }
 
-    suspend fun insertMemo(memo:Memo) = withContext(ioDispatcher) {
+    fun insertMemo(memo:Memo) {
         memoDao.insertMemo(memo)
     }
 
-    suspend fun updateMemo(memo:Memo) = withContext(ioDispatcher) {
+//    suspend fun insertMemo(memo:Memo) = withContext(ioDispatcher) {
+//        memoDao.insertMemo(memo)
+//    }
+
+    fun updateMemo(memo:Memo) {
         memoDao.updateMemo(memo)
     }
+
+//    suspend fun updateMemo(memo:Memo) = withContext(ioDispatcher) {
+//        memoDao.updateMemo(memo)
+//    }
 
     suspend fun deleteMemo(memo:Memo) = withContext(ioDispatcher) {
         memoDao.deleteMemo(memo)

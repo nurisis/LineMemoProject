@@ -18,7 +18,6 @@ class MemoListPresenter(
     private val schedulerProvider: BaseSchedulerProvider
 ) : MemoListContract.Presenter {
 
-    @NonNull
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     init {
